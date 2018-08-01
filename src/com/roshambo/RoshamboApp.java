@@ -9,13 +9,16 @@ public class RoshamboApp {
 		Scanner scan = new Scanner(System.in);
 		Player human = new User();
 		Player computer = null;
+		Player computer2 = null;
 		String userName;
 		String userOpp;
 		String userInput;
 		Roshambo value = null;
 		Roshambo userValue = null;
 		String cont = "y";
-
+		int userWins = 0;
+		int compWins = 0;
+		
 		System.out.println("Welcome to Roshambo!");
 		System.out.println();
 		// Prompt user to enter name. Validate input.
@@ -38,40 +41,50 @@ public class RoshamboApp {
 				value = computer.generateRoshambo();
 				System.out.println("Beethoven: " + value);
 			} else if (userOpp.equalsIgnoreCase("m")) {
-				computer = new RandomUser();
-				computer.setName("Mozart");
-				value = computer.generateRoshambo();
+				computer2 = new RandomUser();
+				computer2.setName("Mozart");
+				value = computer2.generateRoshambo();
 				System.out.println("Mozart: " + value);
 			}
 			// Display user's choice.
 			userValue = human.generateRoshambo(userInput);
 			System.out.println(userName + ": " + userValue);
 
-			// Display results of match. Write a separate method.
 			System.out.println();
+			// Display results of match. Write a separate method.
+			if (displayResults(computer, human, userValue, value) == 0) {
+				System.out.println("Draw!");
+			} else if (displayResults(computer, human, userValue, value) == -1) {
+				compWins++;
+				System.out.println(computer.getName() + " wins!");
+			} else {
+				userWins++;
+				System.out.println(human.getName() + " wins!");
+			}
+
 			System.out.println(displayResults(computer, human, userValue, value));
 			System.out.println();
 			// Prompt user to continue. Validate
 			System.out.println("Play again? (y/n)");
 			cont = scan.nextLine();
 		}
-
+		System.out.println(human.getName() + " won " + userWins + " games.");
+		System.out.println(human.getName() + " lost " + compWins + " games.");
+		System.out.println();
 		System.out.println("Thanks for playing! Goodbye!");
 
 		scan.close();
 	}
 
-	public static String displayResults(Player computer, Player human, Roshambo userValue, Roshambo value) {
+	public static int displayResults(Player computer, Player human, Roshambo userValue, Roshambo value) {
 		if (userValue == value) {
-			return "Draw!";
+			return 0;
 		} else if (userValue == Roshambo.ROCK && value == Roshambo.PAPER
 				|| userValue == Roshambo.PAPER && value == Roshambo.SCISSORS
 				|| userValue == Roshambo.SCISSORS && value == Roshambo.ROCK) {
-
-			return computer.getName() + " wins!";
+			return -1;
 		} else {
-			return human.getName() + " wins!";
+			return 1;
 		}
 	}
-
 }
